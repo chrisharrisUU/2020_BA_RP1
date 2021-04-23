@@ -167,49 +167,49 @@ df1 %<>%
 
 # Prolific ----------------------------------------------------------------
 
-# Create CSV of all accepted IDs
-df1 %>%
-  select(id) %>%
-  distinct(id) %>%
-  write.csv(file = "Output/Prolific/2020_BA_RP1_Prolific_accepted.csv", row.names = FALSE)
-
-
-# Parameters
-minearn <- .85
-meanearn <- 1
-maxearn <- 1.15
-
-# Helper function for adjusting payments
-adjuster <- function(x) {
-  if (dplyr::is_grouped_df(x)) {
-    return(dplyr::do(x, adjuster(., ...)))
-  }
-
-  while (mean(x) < (meanearn - .02)) {
-    maximum <- max(x[x < maxearn])
-    x[which(x == maximum)] <- maxearn
-  }
-  while (mean(x) > (meanearn + 2)) {
-    maximum <- which(x > meanearn)
-    x[maximum] <- x[maximum] - 0.01
-  }
-  x
-}
-
-# Create CSV file of extra payments
-df1 %>%
-  group_by(condition) %>%
-  mutate(transformed_account = ((account - min(account)) / (max(account) - min(account))) * (maxearn - minearn) + minearn) %>%
-  mutate(transformed_account = adjuster(transformed_account)) %>%
-  mutate(extra_earnings = round(transformed_account, 2) - minearn) %>%
-  ungroup() %>%
-  # summarize(min = min(extra_earnings) + .85,
-  #           mean = mean(extra_earnings) + .85,
-  #           max = max(extra_earnings) + .85,
-  #           total = sum(extra_earnings))
-  select(id, extra_earnings) %>%
-  filter(extra_earnings > 0) %>%
-  write.csv(file = "Output/Prolific/2020_BA_RP1_Prolific_earnings.csv", row.names = FALSE)
+# # Create CSV of all accepted IDs
+# df1 %>%
+#   select(id) %>%
+#   distinct(id) %>%
+#   write.csv(file = "Output/Prolific/2020_BA_RP1_Prolific_accepted.csv", row.names = FALSE)
+# 
+# 
+# # Parameters
+# minearn <- .85
+# meanearn <- 1
+# maxearn <- 1.15
+# 
+# # Helper function for adjusting payments
+# adjuster <- function(x) {
+#   if (dplyr::is_grouped_df(x)) {
+#     return(dplyr::do(x, adjuster(., ...)))
+#   }
+# 
+#   while (mean(x) < (meanearn - .02)) {
+#     maximum <- max(x[x < maxearn])
+#     x[which(x == maximum)] <- maxearn
+#   }
+#   while (mean(x) > (meanearn + 2)) {
+#     maximum <- which(x > meanearn)
+#     x[maximum] <- x[maximum] - 0.01
+#   }
+#   x
+# }
+# 
+# # Create CSV file of extra payments
+# df1 %>%
+#   group_by(condition) %>%
+#   mutate(transformed_account = ((account - min(account)) / (max(account) - min(account))) * (maxearn - minearn) + minearn) %>%
+#   mutate(transformed_account = adjuster(transformed_account)) %>%
+#   mutate(extra_earnings = round(transformed_account, 2) - minearn) %>%
+#   ungroup() %>%
+#   # summarize(min = min(extra_earnings) + .85,
+#   #           mean = mean(extra_earnings) + .85,
+#   #           max = max(extra_earnings) + .85,
+#   #           total = sum(extra_earnings))
+#   select(id, extra_earnings) %>%
+#   filter(extra_earnings > 0) %>%
+#   write.csv(file = "Output/Prolific/2020_BA_RP1_Prolific_earnings.csv", row.names = FALSE)
 
 
 # Demographic data --------------------------------------------------------
