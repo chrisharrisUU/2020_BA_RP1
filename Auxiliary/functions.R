@@ -21,7 +21,10 @@ source_https("https://raw.githubusercontent.com/chrisharrisUU/testoutputs/master
 
 
 # Time series functions ---------------------------------------------------
-time_series <- function(.data) {
+time_series <- function(.data, grouping_var) {
+  # Enquote
+  grouping_var <- enquo(grouping_var)
+  
   # Range
   trials <- colnames(.data) %>%
     .[grep("trial", .)] %>%
@@ -32,7 +35,7 @@ time_series <- function(.data) {
   
   # Data prep
   .data %<>%
-    select(id, bias, primacy, contains("trial")) %>%
+    select(id, !!grouping_var, primacy, contains("trial")) %>%
     # Counterbalancing
     mutate_at(.vars = vars(contains("trial")),
               .funs = ~ifelse(primacy == "left frequent", . * (-1), .)) %>%
@@ -42,7 +45,7 @@ time_series <- function(.data) {
     # 0 - 1 for percentages
     mutate_at(.vars = vars(contains("trial")),
               .funs = ~ifelse(. < 0, 0, 1)) %>%
-    group_by(bias) %>%
+    group_by(!!grouping_var) %>%
     # Summarize percentage positive hits
     summarize_at(.vars = vars(contains("trial")),
                  .funs = ~mean(., na.rm = TRUE)) %>%
@@ -57,8 +60,8 @@ time_series <- function(.data) {
   ggplot(.data,
          aes(x = time,
              y = sampling,
-             color = bias,
-             group = bias)) +
+             color = !!grouping_var,
+             group = !!grouping_var)) +
     # geom_hline(yintercept = .5,
     #                alpha = .3) +
     geom_segment(aes(x = 5,
@@ -79,4 +82,3 @@ time_series <- function(.data) {
     labs(y = "Percentage sampling frequent option",
          x = "Trial")  + guides(color = guide_legend(reverse = TRUE))
 }
-
