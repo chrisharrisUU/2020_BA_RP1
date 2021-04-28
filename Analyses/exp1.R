@@ -218,6 +218,9 @@ df1 %<>%
 #          contains("trial"), choiceindex_per,
 #          prepref_freq, postpref_freq, precond_dp, postcond_dp, preconf_dp, postconf_dp,
 #          age, gender, psych, edu) %>%
+#   # Counterbalance
+#   mutate_at(vars(contains("trial")),
+#             ~ifelse(primacy == "left frequent", .x * (-1), .x)) %>%
 #   write_sav(., path = "Output/data.sav")
 
 # Demographic data --------------------------------------------------------
