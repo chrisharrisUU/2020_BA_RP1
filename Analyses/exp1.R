@@ -212,6 +212,14 @@ df1 %<>%
 #   write.csv(file = "Output/Prolific/2020_BA_RP1_Prolific_earnings.csv", row.names = FALSE)
 
 
+# Data export for students ------------------------------------------------
+# df1 %>%
+#   select(id, counterbalancing, condition, primacy, winning, questdir,
+#          contains("trial"), choiceindex_per,
+#          prepref_freq, postpref_freq, precond_dp, postcond_dp, preconf_dp, postconf_dp,
+#          age, gender, psych, edu) %>%
+#   write_sav(., path = "Output/data.sav")
+
 # Demographic data --------------------------------------------------------
 
 # Summary of most relevant demographic data
@@ -336,7 +344,8 @@ ttest(data = df1, y = preconf_dp, x = condition, mu = 0)
 
 # Sampling -------------------------------------------------
 # Graph over trials
-time_series(df1)
+time_series(df1, condition)
+time_series(df1, bias)
 ggsave(filename = "Output/Graphs/sampling1.svg", device = "svg", dpi = 320, width = 9.08, height = 5.72)
 # ggsave("Output/sampling.png", device = "png" , dpi = 320, width = 9.08, height = 5.72)
 
@@ -433,7 +442,7 @@ df1 %>%
   labs(x = "Measurement point",
        y = "Relative contingency estimates")
 
-# Conditionals postmeasure -------------------------------------------------
+# Conditionals post measure -------------------------------------------------
 # Graph
 df1 %>%
   ggplot(aes(x = condition,
