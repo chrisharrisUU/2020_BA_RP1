@@ -63,13 +63,7 @@ column.rename <- function(.data) {
   freeselection <- .data %>%
     select(contains("TR02")) %>%
     select(everything(), -contains("a")) %>%
-    mutate_all(list(~(function(x) {
-      x <- gsub("group1.png", -1, x)
-      x <- gsub("group2.png", 1, x)
-      x %>%
-        as.integer %>%
-        return
-    })(.)))
+    mutate(across(everything(), ~ifelse(.x == "group1.png", -1, ifelse(.x == "group2.png", 1, NA))))
   # Assign useful column names
   colnames(freeselection) <- paste("trial", 17:100, sep = "")
   # Create selection index
@@ -276,6 +270,7 @@ df1 %>%
         x = condition,
         mu = 0,
         dir = "greater")
+
 
 # Conditionals pre measure -------------------------------------------------
 # How likely was it (in %) that you drew knife/ruler if...
