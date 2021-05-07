@@ -6,7 +6,8 @@ if (!require(goallabr)) {
   install_github("chrisharrisUU/goallabr")
 }
 needs(BayesFactor, dplyr, ggplot2, ggsci, goallabr,
-      gridExtra, haven, here, lme4, lmerTest, magrittr, tidyr, papaja, purrr)
+      gridExtra, haven, Hmisc, here, lme4, lmerTest,
+      magrittr, tidyr, papaja, purrr, svglite)
 prioritize(dplyr)
 
 # Color palette for graphs
