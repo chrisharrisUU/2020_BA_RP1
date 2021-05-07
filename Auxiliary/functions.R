@@ -1,23 +1,5 @@
-# Import functions from GitHub --------------------------------------------
-# https://stackoverflow.com/a/35720824/10357426
-source_https <- function(u, unlink.tmp.certs = FALSE) {
-  # load package
-  if (!require(RCurl)) {install.packages("RCurl"); library(RCurl)}
-  
-  # read script lines from website using a security certificate
-  if (!file.exists(here("Auxiliary/cacert.pem"))) {
-    download.file(url = "http://curl.haxx.se/ca/cacert.pem", destfile = here("Auxiliary/cacert.pem"))
-  }
-  script <- getURL(u, followlocation = TRUE, cainfo = here("Auxiliary/cacert.pem"))
-  if (unlink.tmp.certs) {unlink(here("Auxiliary/cacert.pem"))}
-  
-  # parase lines and evealuate in the global environement
-  eval(parse(text = script), envir = .GlobalEnv)
-}
-
-
 # My functions for outputting inference tests in APAish style -------------
-source_https("https://raw.githubusercontent.com/chrisharrisUU/testoutputs/master/functions.R")
+source("https://raw.githubusercontent.com/chrisharrisUU/testoutputs/master/functions.R")
 
 
 # Time series functions ---------------------------------------------------
